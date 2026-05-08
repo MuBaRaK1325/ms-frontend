@@ -940,7 +940,6 @@ async function loadProfitDashboard() {
 /* ================= ADMIN: TRANSACTIONS MANAGER ================= */
 async function loadAdminTransactions() {
   const status = el("txStatusFilter")?.value || "";
-  const provider = el("txProviderFilter")?.value || "";
   const search = el("txSearch")?.value || "";
   const list = el("transactionsList");
   if (!list) return;
@@ -956,8 +955,8 @@ async function loadAdminTransactions() {
       return;
     }
 
-    // CORRECT endpoint for admin wallet deduction log
-    const url = `${API}/admin/wallet/transactions?status=${encodeURIComponent(status)}&provider=${encodeURIComponent(provider)}&search=${encodeURIComponent(search)}&t=${Date.now()}`;
+    // Removed provider param - backend doesn't use it
+    const url = `${API}/admin/wallet/transactions?status=${encodeURIComponent(status)}&search=${encodeURIComponent(search)}&t=${Date.now()}`;
     console.log("[ADMIN TX] Fetching:", url);
     
     const res = await fetch(url, {
@@ -972,8 +971,7 @@ async function loadAdminTransactions() {
     const data = await res.json();
     hideLoader();
 
-    // Handle both array or {transactions: array} response format
-    const transactions = Array.isArray(data) ? data : (data.transactions || data.data || []);
+    const transactions = Array.isArray(data) ? data : [];
     console.log("[ADMIN TX] Loaded:", transactions.length, "transactions");
     
     list.innerHTML = "";
@@ -983,13 +981,24 @@ async function loadAdminTransactions() {
     }
 
     transactions.forEach(tx => {
-      const statusColor = tx.status === "SUCCESS" ? "#00c853" : tx.status === "PENDING" ? "#ffa000" : "#ff4d4d";
-      const isManualDeductAllowed = (tx.provider === 'maitama') ||
-                                   (currentUser.company === 'mayconnect' && ['cheapdatahub', 'subpadi'].includes(tx.provider));
-      const isReversalAllowed = tx.status === 'SUCCESS';
+      const isManual = tx.metadata?.manual_deducted;
+      const isReversed = tx.metadata?.reversed;
+      
+      // Determine display status from type and metadata
+      let displayStatus = tx.type === 'credit' ? 'CREDIT' : 'DEBIT';
+      let statusColor = tx.type === 'credit' ? "#00c853" : "#ff4d4d";
+      
+      if (isManual) {
+        displayStatus = "MANUAL DEDUCT";
+        statusColor = "#ffa000";
+      }
+      if (isReversed) {
+        displayStatus = "REVERSED";
+        statusColor = "#ff4d4d";
+      }
 
-      const wasManual = tx.metadata?.manual_deducted ? '<span class="badge badgeWarning">MANUAL</span>' : '';
-      const wasReversed = tx.metadata?.reversed ? '<span class="badge badgeDanger">REVERSED</span>' : '';
+      const wasManual = isManual ? '<span class="badge badgeWarning">MANUAL</span>' : '';
+      const wasReversed = isReversed ? '<span class="badge badgeDanger">REVERSED</span>' : '';
 
       list.innerHTML += `
         <div class="transactionCard">
@@ -1001,18 +1010,18 @@ async function loadAdminTransactions() {
             </div>
             <div style="text-align:right">
               <strong style="font-size:18px">${formatNaira(tx.amount || 0)}</strong><br>
-              <span style="color:${statusColor};font-weight:600">${tx.status || 'UNKNOWN'}</span><br>
-              <small style="opacity:0.6">${tx.provider?.toUpperCase() || 'N/A'}</small>
+              <span style="color:${statusColor};font-weight:600">${displayStatus}</span><br>
+              <small style="opacity:0.6">${tx.admin_email || 'System'}</small>
             </div>
           </div>
 
           <small style="opacity:0.5">${formatDate(tx.created_at)}</small>
 
           <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-            ${tx.status === 'FAILED' && isManualDeductAllowed ?
+            ${tx.type === 'debit' && !isManual && !isReversed ?
               `<button onclick="forceDeductTransaction('${tx.reference}', ${tx.amount})" class="warningBtn">Force Deduct</button>` : ''}
 
-            ${isReversalAllowed ?
+            ${tx.type === 'credit' && !isReversed ?
               `<button onclick="reverseTransaction('${tx.reference}')" class="dangerBtn">Reverse</button>` : ''}
           </div>
         </div>`;
@@ -1025,7 +1034,7 @@ async function loadAdminTransactions() {
 }
 
 async function forceDeductTransaction(reference, amount) {
-  const reason = prompt(`Deduct ₦${formatNaira(amount)} from user wallet?\n\nEnter reason:`, "Maitama delivered but API returned failed");
+  const reason = prompt(`Deduct ₦${formatNaira(amount)} from user wallet?\n\nEnter reason:`, "Admin manual deduction");
   if (!reason) return;
 
   if (!confirm(`Confirm deduction of ₦${formatNaira(amount)} from user wallet? This cannot be undone.`)) return;
