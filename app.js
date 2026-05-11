@@ -166,31 +166,19 @@ async function loadWallet() {
   const wallet = user.wallet || {};
   const dva = wallet.dva || {};
 
-  // --- FIX: RENDER DVA BASED ON COMPANY ---
+  // --- PAYMENTPOINT DVA FOR ALL COMPANIES ---
   const dvaContainer = el("dvaContainer");
   if (dvaContainer) {
-    if (dva.accountNumber && ["mayconnect", "Teeversh", "bnhabeeb"].includes(currentUser.company)) {
-      // Monnify DVA for these 3 companies
+    if (dva.accountNumber) {
       dvaContainer.innerHTML = `
         <div class="walletCard">
-          <h4>Monnify Virtual Account</h4>
+          <h4>PaymentPoint Virtual Account</h4>
           <p><strong>Bank:</strong> ${dva.bankName || 'N/A'}</p>
           <p><strong>Account Number:</strong> ${dva.accountNumber} 
             <button onclick="copyToClipboard('${dva.accountNumber}')" class="smallBtn">Copy</button>
           </p>
           <p><strong>Account Name:</strong> ${dva.accountName || user.username}</p>
-          <small style="opacity:0.7">Transfer to this account to fund your wallet instantly</small>
-        </div>`;
-    } else if (dva.accountNumber && currentUser.company === "sadeeq") {
-      // Flutterwave DVA for Sadeeq
-      dvaContainer.innerHTML = `
-        <div class="walletCard">
-          <h4>Flutterwave Virtual Account</h4>
-          <p><strong>Bank:</strong> ${dva.bankName || 'N/A'}</p>
-          <p><strong>Account Number:</strong> ${dva.accountNumber}
-            <button onclick="copyToClipboard('${dva.accountNumber}')" class="smallBtn">Copy</button>
-          </p>
-          <p><strong>Account Name:</strong> ${dva.accountName || user.username}</p>
+          <small style="opacity:0.7">Transfer to this account to fund your wallet instantly. Use exact amount.</small>
         </div>`;
     } else {
       // No DVA yet - show generate button
@@ -198,6 +186,31 @@ async function loadWallet() {
         <button onclick="generateDVA()" class="primaryBtn">Generate Virtual Account</button>`;
     }
   }
+}
+
+async function generateDVA() {
+  try {
+    const res = await fetch(API + "/api/wallet/create-dva", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + getToken() }
+    });
+    const data = await res.json();
+
+    if (data.success || data.account_number) {
+      showToast("Virtual account created", "success");
+      loadWallet(); // reload to show the account
+    } else {
+      showToast(data.message || data.error || "Failed to create account", "error");
+    }
+  } catch (err) {
+    showToast("Network error", "error");
+  }
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text);
+  showToast("Copied to clipboard", "success");
+}
 
   // --- RENDER TRANSACTIONS ---
   const list = el("walletTransactionsList");
