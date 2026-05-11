@@ -242,7 +242,7 @@ function copyToClipboard(text) {
         </div>`;
     });
   }
-}
+
 
 // New function to generate Monnify/Flutterwave DVA
 async function generateDVA() {
