@@ -566,8 +566,8 @@ box-shadow:0 0 40px rgba(147,51,234,0.3);
 </div>
 
 <!-- TEEVERSH RECEIPT MODAL - FIXED -->
-<div id="receiptModal">
-  <div class="receiptBox">
+<div id="receiptModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); z-index:50; align-items:center; justify-content:center; padding:16px;">
+  <div class="receiptBox" style="background:#1a0b2e; border-radius:24px; max-width:420px; width:100%; overflow:hidden; box-shadow:0 25px 50px rgba(0,0,0,0.5); border:1px solid rgba(147,51,234,0.3);">
     <div id="receiptContent" style="padding:1px;">
       <div style="position:relative; padding:24px; border-bottom:1px solid rgba(147,51,234,0.3);">
         <button onclick="closeReceipt()" style="position:absolute; right:16px; top:16px; color:#c4b5fd; background:rgba(147,51,234,0.2); border:none; cursor:pointer; padding:6px 10px; border-radius:8px; font-size:18px; line-height:1;">✕</button>
@@ -612,17 +612,12 @@ box-shadow:0 0 40px rgba(147,51,234,0.3);
           </div>
           <div style="height:1px; background:linear-gradient(90deg, transparent, rgba(147,51,234,0.3), transparent); margin:16px 0;"></div>
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="color:rgba(196,181,253,0.9); font-size:14px; font-weight:500;">Amount</span>
+            <span style="color:rgba(196,181,253,0.9); font-size:14px; font-weight:500;">Amount Paid</span>
             <span id="receiptPrice" style="color:white; font-weight:bold; font-size:24px;"></span>
           </div>
         </div>
 
-        <div style="background:white; border-radius:16px; padding:16px; display:flex; flex-direction:column; align-items:center; gap:8px; border:1px solid rgba(147,51,234,0.2);">
-          <canvas id="qrCanvas"></canvas>
-          <p style="color:#1a0b2e; font-size:12px; font-family:monospace; font-weight:600; margin:0;">Scan to Verify</p>
-        </div>
-
-        <div style="text-align:center;">
+        <div style="text-align:center; padding:16px 0;">
           <p style="color:rgba(196,181,253,0.4); font-size:10px; font-family:monospace; letter-spacing:0.2em; margin:0;">TEEVERSH PAYMENT GATEWAY</p>
           <p id="txnId" style="color:rgba(196,181,253,0.3); font-size:9px; margin:4px 0 0; cursor:pointer;" onclick="copyTxnId()" title="Click to copy"></p>
         </div>
@@ -1095,17 +1090,17 @@ box-shadow:0 0 40px rgba(147,51,234,0.3);
   <button id="closeBanner" class="dangerBtn" style="width:auto;margin:0 5px;">Later</button>
 </div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
 let currentTxnId = '';
 
 function showReceipt(data) {
-  document.getElementById('receiptNumber').textContent = data.number;
+  document.getElementById('receiptNumber').textContent = data.number || 'N/A';
   document.getElementById('receiptNetwork').textContent = data.network || 'N/A';
-  document.getElementById('receiptPlan').textContent = data.plan || data.type;
+  document.getElementById('receiptPlan').textContent = data.plan || data.type || 'N/A';
   document.getElementById('receiptDate').textContent = data.date;
-  document.getElementById('receiptPrice').textContent = '₦' + data.price;
+  document.getElementById('receiptPrice').textContent = '₦' + Number(data.price).toLocaleString();
   currentTxnId = data.txnId || data.id || 'TVS' + Date.now().toString().slice(-8);
   document.getElementById('txnId').textContent = 'Transaction ID: ' + currentTxnId;
 
@@ -1114,25 +1109,12 @@ function showReceipt(data) {
     failed: {bg: 'rgba(239,68,68,0.15)', color: '#f87171', border: 'rgba(239,68,68,0.3)', text: 'FAILED'},
     pending: {bg: 'rgba(234,179,8,0.15)', color: '#facc15', border: 'rgba(234,179,8,0.3)', text: 'PENDING'}
   };
-  const s = statusColors[data.status] || statusColors.pending;
+  const s = statusColors[(data.status || 'pending').toLowerCase()] || statusColors.pending;
   const badge = document.getElementById('statusBadge');
   badge.style.background = s.bg;
   badge.style.color = s.color;
   badge.style.borderColor = s.border;
   badge.querySelector('span').textContent = s.text;
-
-  QRCode.toCanvas(document.getElementById('qrCanvas'), JSON.stringify({
-    id: currentTxnId,
-    number: data.number,
-    amount: data.price,
-    date: data.date,
-    status: data.status,
-    company: 'TEEVERSh'
-  }), {
-    width: 120,
-    margin: 0,
-    color: { dark: '#1a0b2e', light: '#ffffff' }
-  });
 
   document.getElementById('receiptModal').style.display = 'flex';
 }
@@ -1150,22 +1132,22 @@ function copyTxnId() {
 }
 
 async function downloadReceipt() {
-  const canvas = await html2canvas(document.getElementById('receiptContent'), {
+  const receiptContent = document.getElementById('receiptContent');
+  const canvas = await html2canvas(receiptContent, {
     backgroundColor: '#1a0b2e',
     scale: 2,
     useCORS: true,
-    logging: false,
-    windowWidth: document.getElementById('receiptContent').scrollWidth,
-    windowHeight: document.getElementById('receiptContent').scrollHeight
+    logging: false
   });
   const link = document.createElement('a');
   link.download = `Teeversh-Receipt-${document.getElementById('receiptNumber').textContent}.png`;
-  link.href = canvas.toDataURL();
+  link.href = canvas.toDataURL('image/png');
   link.click();
 }
 
 async function shareReceipt() {
-  const canvas = await html2canvas(document.getElementById('receiptContent'), {
+  const receiptContent = document.getElementById('receiptContent');
+  const canvas = await html2canvas(receiptContent, {
     backgroundColor: '#1a0b2e',
     scale: 2,
     useCORS: true,

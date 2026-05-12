@@ -186,31 +186,6 @@ async function loadWallet() {
         <button onclick="generateDVA()" class="primaryBtn">Generate Virtual Account</button>`;
     }
   }
-}
-
-async function generateDVA() {
-  try {
-    const res = await fetch(API + "/api/wallet/create-dva", {
-      method: "POST",
-      headers: { Authorization: "Bearer " + getToken() }
-    });
-    const data = await res.json();
-
-    if (data.success || data.account_number) {
-      showToast("Virtual account created", "success");
-      loadWallet(); // reload to show the account
-    } else {
-      showToast(data.message || data.error || "Failed to create account", "error");
-    }
-  } catch (err) {
-    showToast("Network error", "error");
-  }
-}
-
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text);
-  showToast("Copied to clipboard", "success");
-}
 
   // --- RENDER TRANSACTIONS ---
   const list = el("walletTransactionsList");
@@ -242,25 +217,6 @@ function copyToClipboard(text) {
         </div>`;
     });
   }
-
-
-// New function to generate Monnify/Flutterwave DVA
-async function generateDVA() {
-  showLoader("Creating your dedicated account...");
-  try {
-    const endpoint = currentUser.company === "sadeeq" ? "/api/flutterwave/create-dva" : "/api/monnify/create-dva";
-    const res = await fetch(API + endpoint, {
-      method: "POST",
-      headers: { Authorization: "Bearer " + getToken() }
-    });
-    const data = await res.json();
-    hideLoader();
-    showMsg(data.message, res.ok ? "success" : "error");
-    if (res.ok) await loadWallet();
-  } catch {
-    hideLoader();
-    showMsg("Server error", "error");
-  }
 }
 
 // Helper for copy button
@@ -291,12 +247,40 @@ async function fetchTransactions() {
 
     if (el("transactionHistory")) {
       el("transactionHistory").innerHTML = "";
-      tx.slice(0, 5).forEach(t => el("transactionHistory").appendChild(txCard(t)));
+      tx.slice(0, 5).forEach(t => {
+        const card = txCard(t);
+        card.onclick = () => showReceipt({
+          number: t.phone || t.reference,
+          network: t.network,
+          plan: t.plan_name || t.type,
+          type: t.type,
+          date: new Date(t.created_at).toLocaleString(),
+          price: t.amount,
+          status: t.status,
+          txnId: t.reference,
+          id: t.id
+        });
+        el("transactionHistory").appendChild(card);
+      });
     }
 
     if (el("allTransactions")) {
       el("allTransactions").innerHTML = "";
-      tx.forEach(t => el("allTransactions").appendChild(txCard(t)));
+      tx.forEach(t => {
+        const card = txCard(t);
+        card.onclick = () => showReceipt({
+          number: t.phone || t.reference,
+          network: t.network,
+          plan: t.plan_name || t.type,
+          type: t.type,
+          date: new Date(t.created_at).toLocaleString(),
+          price: t.amount,
+          status: t.status,
+          txnId: t.reference,
+          id: t.id
+        });
+        el("allTransactions").appendChild(card);
+      });
     }
   } catch (e) {
     console.error("Fetch transactions error:", e);
@@ -312,9 +296,10 @@ function txCard(t) {
   const statusColor = t.status === "SUCCESS"? "#00c853" : t.status === "FAILED"? "#ff4d4d" : "#ffa000";
   div.innerHTML = `
     <strong>${t.type}</strong> ${formatNaira(t.amount)}<br>
-    ${t.phone || t.network || ""}<br>
+    ${t.phone || t.network || t.reference || ""}<br>
     <span style="color:${statusColor}">${t.status}</span>
     <small style="float:right">${formatDate(t.created_at)}</small>`;
+  div.style.cursor = "pointer";
   return div;
 }
 
