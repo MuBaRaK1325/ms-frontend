@@ -649,16 +649,13 @@ box-shadow:0 0 40px rgba(147,51,234,0.3);
 <strong id="walletBalance">₦0</strong>
 </div>
 
-<div class="adminWalletCard adminOnly">
-<p>Admin Profit Wallet</p>
-<strong id="adminWalletBalance">₦0</strong>
-</div>
+
 
 <div class="quickActions">
 <div class="quickCard" onclick="showSection('data')">📶 Buy Data</div>
 <div class="quickCard" onclick="showSection('airtime')">📞 Buy Airtime</div>
 <div class="quickCard" onclick="showSection('fund')">💰 Fund Wallet</div>
-<div class="quickCard adminOnly" onclick="showSection('profitDashboard')">📊 Profit</div>
+
 </div>
 
 <div id="transactionHistory"></div>
@@ -718,22 +715,7 @@ box-shadow:0 0 40px rgba(147,51,234,0.3);
 <div id="allTransactions"></div>
 </section>
 
-<!-- ADMIN: PROFIT DASHBOARD -->
-<section id="profitDashboard" class="section adminOnly">
-<button onclick="showSection('home')" class="backBtn">⬅ Back</button>
-<h3>📊 Profit Dashboard</h3>
 
-<div class="adminSection">
-  <strong>Total Profit: <span id="totalProfit">₦0</span></strong><br>
-  <strong>Admin Wallet: <span id="adminWalletBalance2">₦0</span></strong>
-</div>
-
-<div class="adminSection">
-  <input type="date" id="profitFrom">
-  <input type="date" id="profitTo">
-  <button onclick="loadProfitDashboard()">Filter</button>
-  <table id="profitTable"></table>
-</div>
 </section>
 
 <!-- ADMIN: TRANSACTIONS MANAGER -->
@@ -873,36 +855,7 @@ box-shadow:0 0 40px rgba(147,51,234,0.3);
 </div>
 
 
-<!-- ADMIN: WITHDRAWALS -->
-<section id="withdrawals" class="section adminOnly">
-  <button onclick="showSection('profile')" class="backBtn">⬅ Back</button>
-  <h3>💸 Admin Withdrawals</h3>
 
-  <div class="adminSection">
-    <h4>Withdraw Admin Profit</h4>
-    
-    <label>Amount</label>
-    <input id="withdrawAmount" type="number" placeholder="Amount (Min ₦100)" min="100">
-    
-    <label>Bank</label>
-    <select id="withdrawBank">
-      <option value="">Select Bank</option>
-    </select>
-    
-    <label>Account Number</label>
-    <input id="withdrawAccountNumber" type="text" placeholder="10-digit account number" maxlength="10" pattern="[0-9]*" inputmode="numeric">
-    
-    <label>Account Name</label>
-    <input id="withdrawAccountName" type="text" placeholder="Account name as shown on bank">
-    
-    <button onclick="requestWithdrawal()" class="primaryBtn">Request Withdrawal</button>
-  </div>
-
-  <div class="adminSection">
-    <h4>Withdrawal History</h4>
-    <div id="withdrawalsList"></div>
-  </div>
-</section>
 
 <style>
 .transactionCard {
