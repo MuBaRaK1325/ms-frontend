@@ -744,7 +744,7 @@ async function purchaseWithBiometric() {
 async function buyData(pin) {
   const phone = selectedPhone || el("dataPhone")?.value;
 
-  if (!phone ||!selectedPlanId) return showMsg("Select plan & enter phone", "error");
+  if (!phone || !selectedPlanId) return showMsg("Select plan & enter phone", "error");
   if (!pin) return showMsg("Enter PIN", "error");
 
   showLoader("Purchasing data...");
@@ -759,21 +759,19 @@ async function buyData(pin) {
     const data = await res.json();
     hideLoader();
 
-    if (res.ok && data.success!== false) {
+    if (res.ok && data.success !== false) {
       updateWallet(data.balance);
       fetchTransactions();
       
-      // Show TEEVERSH receipt instead of toast
+      // Show TEEVERSH receipt
       showReceipt({
-        reference: data.reference || data.transaction_id || 'TXN' + Date.now(),
-        created_at: data.created_at || new Date().toISOString(),
-        type: 'Data',
-        network: selectedNetwork?.toUpperCase(),
-        phone: phone,
-        plan_name: selectedPlan?.name,
-        amount: selectedPlan?.price,
-        status: data.status || 'SUCCESS',
-        balance_after: data.balance
+        number: data.phone || phone,
+        network: data.network || selectedNetwork?.toUpperCase(),
+        plan: data.plan_name || selectedPlan?.name,
+        amount: data.amount,  // use API response, not selectedPlan.price
+        date: data.created_at || new Date().toISOString(),
+        txnId: data.reference || data.transaction_id || data.tx_id,
+        status: data.status || 'SUCCESS'
       });
 
       if (el("dataPhone")) el("dataPhone").value = '';
@@ -791,7 +789,7 @@ async function buyAirtime(pin) {
   const phone = selectedPhone || el("airtimePhone")?.value;
   const amount = el("airtimeAmount")?.value;
 
-  if (!phone ||!amount ||!airtimeNetwork) return showMsg("Fill all fields", "error");
+  if (!phone || !amount || !airtimeNetwork) return showMsg("Fill all fields", "error");
   if (!pin) return showMsg("Enter PIN", "error");
 
   showLoader("Purchasing airtime...");
@@ -806,21 +804,19 @@ async function buyAirtime(pin) {
     const data = await res.json();
     hideLoader();
 
-    if (res.ok && data.success!== false) {
+    if (res.ok && data.success !== false) {
       updateWallet(data.balance);
       fetchTransactions();
 
-      // Show TEEVERSH receipt instead of toast
+      // Show TEEVERSH receipt
       showReceipt({
-        reference: data.reference || data.transaction_id || 'TXN' + Date.now(),
-        created_at: data.created_at || new Date().toISOString(),
-        type: 'Airtime',
-        network: airtimeNetwork?.toUpperCase(),
-        phone: phone,
-        plan_name: 'Airtime Top-up',
-        amount: amount,
-        status: data.status || 'SUCCESS',
-        balance_after: data.balance
+        number: data.phone || phone,
+        network: data.network || airtimeNetwork?.toUpperCase(),
+        plan: 'Airtime Top-up',
+        amount: data.amount || amount,  // prefer API response
+        date: data.created_at || new Date().toISOString(),
+        txnId: data.reference || data.transaction_id || data.tx_id,
+        status: data.status || 'SUCCESS'
       });
 
       if (el("airtimePhone")) el("airtimePhone").value = '';

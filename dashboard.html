@@ -565,17 +565,19 @@ box-shadow:0 0 40px rgba(147,51,234,0.3);
 
 <!-- TEEVERSH RECEIPT MODAL - FIXED -->
 <div id="receiptModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); z-index:50; align-items:center; justify-content:center; padding:16px;">
-  <div class="receiptBox" style="background:#1a0b2e; border-radius:24px; max-width:420px; width:100%; overflow:hidden; box-shadow:0 25px 50px rgba(0,0,0,0.5); border:1px solid rgba(147,51,234,0.3);">
+  <div class="receiptBox" style="background:#1a0b2e; border-radius:24px; max-width:420px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 25px 50px rgba(0,0,0,0.5); border:1px solid rgba(147,51,234,0.3);">
     <div id="receiptContent" style="padding:1px;">
-      <div style="position:relative; padding:24px; border-bottom:1px solid rgba(147,51,234,0.3);">
+      
+      <!-- Header with padding-right to avoid X overlap -->
+      <div style="position:relative; padding:24px 48px 24px 24px; border-bottom:1px solid rgba(147,51,234,0.3);">
         <button onclick="closeReceipt()" style="position:absolute; right:16px; top:16px; color:#c4b5fd; background:rgba(147,51,234,0.2); border:none; cursor:pointer; padding:6px 10px; border-radius:8px; font-size:18px; line-height:1;">✕</button>
         <div style="display:flex; align-items:center; gap:12px;">
-          <img src="images/TEEVERSH.png" alt="Teeversh" style="width:48px; height:48px; border-radius:12px; box-shadow:0 4px 12px rgba(147,51,234,0.5); object-fit:cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <div style="width:48px; height:48px; border-radius:12px; background:linear-gradient(135deg, #9333ea, #7e22ce); display:none; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(147,51,234,0.5);">
+          <img src="images/TEEVERSH.png" alt="Teeversh" style="width:48px; height:48px; border-radius:12px; box-shadow:0 4px 12px rgba(147,51,234,0.5); object-fit:cover; flex-shrink:0;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div style="width:48px; height:48px; border-radius:12px; background:linear-gradient(135deg, #9333ea, #7e22ce); display:none; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(147,51,234,0.5); flex-shrink:0;">
             <span style="color:white; font-weight:bold; font-size:24px;">T</span>
           </div>
-          <div>
-            <h2 style="color:white; font-weight:bold; font-size:20px; margin:0;">TEEVERSH VTU</h2>
+          <div style="min-width:0;">
+            <h2 style="color:white; font-weight:bold; font-size:20px; margin:0; word-break:break-word;">TEEVERSH VTU</h2>
             <p style="color:rgba(196,181,253,0.8); font-size:12px; margin:0;">Transaction Receipt</p>
           </div>
         </div>
@@ -589,29 +591,29 @@ box-shadow:0 0 40px rgba(147,51,234,0.3);
 
       <div style="padding:24px; display:flex; flex-direction:column; gap:20px;">
         <div style="background:rgba(0,0,0,0.4); border-radius:16px; padding:20px; border:1px solid rgba(147,51,234,0.2);">
-          <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
-            <span style="color:rgba(196,181,253,0.9); font-size:14px; font-weight:500;">Phone Number</span>
-            <span id="receiptNumber" style="color:white; font-family:monospace; font-weight:bold; text-align:right;"></span>
+          <div style="display:flex; justify-content:space-between; margin-bottom:16px; gap:12px;">
+            <span style="color:rgba(196,181,253,0.9); font-size:14px; font-weight:500; flex-shrink:0;">Phone Number</span>
+            <span id="receiptNumber" style="color:white; font-family:monospace; font-weight:bold; text-align:right; word-break:break-all;"></span>
           </div>
           <div style="height:1px; background:linear-gradient(90deg, transparent, rgba(147,51,234,0.3), transparent); margin:16px 0;"></div>
-          <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
-            <span style="color:rgba(196,181,253,0.9); font-size:14px; font-weight:500;">Network</span>
+          <div style="display:flex; justify-content:space-between; margin-bottom:16px; gap:12px;">
+            <span style="color:rgba(196,181,253,0.9); font-size:14px; font-weight:500; flex-shrink:0;">Network</span>
             <span id="receiptNetwork" style="color:white; font-size:14px; text-align:right;"></span>
           </div>
           <div style="height:1px; background:linear-gradient(90deg, transparent, rgba(147,51,234,0.3), transparent); margin:16px 0;"></div>
-          <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
-            <span style="color:rgba(196,181,253,0.9); font-size:14px; font-weight:500;">Plan</span>
-            <span id="receiptPlan" style="color:white; font-size:14px; text-align:right;"></span>
+          <div style="display:flex; justify-content:space-between; margin-bottom:16px; gap:12px;">
+            <span style="color:rgba(196,181,253,0.9); font-size:14px; font-weight:500; flex-shrink:0;">Plan</span>
+            <span id="receiptPlan" style="color:white; font-size:14px; text-align:right; word-break:break-word;"></span>
           </div>
           <div style="height:1px; background:linear-gradient(90deg, transparent, rgba(147,51,234,0.3), transparent); margin:16px 0;"></div>
-          <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
-            <span style="color:rgba(196,181,253,0.9); font-size:14px; font-weight:500;">Date & Time</span>
+          <div style="display:flex; justify-content:space-between; margin-bottom:16px; gap:12px;">
+            <span style="color:rgba(196,181,253,0.9); font-size:14px; font-weight:500; flex-shrink:0;">Date & Time</span>
             <span id="receiptDate" style="color:white; font-size:14px; text-align:right;"></span>
           </div>
           <div style="height:1px; background:linear-gradient(90deg, transparent, rgba(147,51,234,0.3), transparent); margin:16px 0;"></div>
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="color:rgba(196,181,253,0.9); font-size:14px; font-weight:500;">Amount Paid</span>
-            <span id="receiptPrice" style="color:white; font-weight:bold; font-size:24px;"></span>
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+            <span style="color:rgba(196,181,253,0.9); font-size:14px; font-weight:500; flex-shrink:0;">Amount Paid</span>
+            <span id="receiptPrice" style="color:white; font-weight:bold; font-size:24px; text-align:right;"></span>
           </div>
         </div>
 
@@ -1051,7 +1053,11 @@ function showReceipt(data) {
   document.getElementById('receiptNetwork').textContent = data.network || 'N/A';
   document.getElementById('receiptPlan').textContent = data.plan || data.type || 'N/A';
   document.getElementById('receiptDate').textContent = data.date;
-  document.getElementById('receiptPrice').textContent = '₦' + Number(data.price).toLocaleString();
+  
+  // Safe amount formatting
+  const amount = Number(data.amount || data.price || 0);
+  document.getElementById('receiptPrice').textContent = '₦' + amount.toLocaleString();
+  
   currentTxnId = data.txnId || data.id || 'TVS' + Date.now().toString().slice(-8);
   document.getElementById('txnId').textContent = 'Transaction ID: ' + currentTxnId;
 
