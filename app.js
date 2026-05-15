@@ -1119,16 +1119,20 @@ async function loadAdminPlans() {
     if (list) {
       list.innerHTML = "";
       plans.forEach(p => {
-        const statusColor = p.is_active? "#00c853" : "#ff4d4d";
-        const restrictBadge = p.restricted? `<span class="badge badgeWarning">RESTRICTED</span>` : '';
-        const providerBadge = p.provider? `<span class="badge">${p.provider.toUpperCase()}</span>` : '';
+        const statusColor = p.is_active ? "#00c853" : "#ff4d4d";
+        const restrictBadge = p.restricted ? `<span class="badge badgeWarning">RESTRICTED</span>` : '';
+        const providerBadge = p.provider ? `<span class="badge">${p.provider.toUpperCase()}</span>` : '';
+        
+        const regularDisplay = p.regular_price ? formatNaira(p.regular_price) : '-';
+        const topDisplay = p.top_price ? formatNaira(p.top_price) : '-';
+        
         list.innerHTML += `<div class="planCard">
           <strong>${p.name}</strong> - ${p.network} ${restrictBadge} ${providerBadge}<br>
-          Default: ${formatNaira(p.price)} | Regular: ${formatNaira(p.regular_price || p.price)} | Top: ${formatNaira(p.top_price || p.price)} | Cost: ${formatNaira(p.cost)}<br>
+          Default: ${formatNaira(p.price)} | Regular: ${regularDisplay} | Top: ${topDisplay} | Cost: ${formatNaira(p.cost)}<br>
           Provider: ${p.provider || 'N/A'} | Net ID: ${p.network_id || 'N/A'} | API ID: ${p.api_plan_id || 'N/A'}<br>
-          <span style="color:${statusColor}">${p.is_active? 'Active' : 'Disabled'}</span>
+          <span style="color:${statusColor}">${p.is_active ? 'Active' : 'Disabled'}</span>
           <button onclick="editPlan(${p.id})" class="primaryBtn">Edit</button>
-          <button onclick="togglePlan(${p.id}, ${!p.is_active})" class="dangerBtn">${p.is_active? 'Disable' : 'Enable'}</button>
+          <button onclick="togglePlan(${p.id}, ${!p.is_active})" class="dangerBtn">${p.is_active ? 'Disable' : 'Enable'}</button>
         </div>`;
       });
     }
@@ -1153,7 +1157,7 @@ async function addPlan() {
     api_plan_id: el("newPlanApiId")?.value
   };
 
-  if (!plan.plan_id ||!plan.network ||!plan.name ||!plan.price ||!plan.cost ||!plan.provider ||!plan.network_id ||!plan.api_plan_id) {
+  if (!plan.plan_id || !plan.network || !plan.name || !plan.price || !plan.cost || !plan.provider || !plan.network_id || !plan.api_plan_id) {
     return showMsg("Fill all required fields including provider details", "error");
   }
 
@@ -1166,7 +1170,7 @@ async function addPlan() {
     });
     const data = await res.json();
     hideLoader();
-    showMsg(data.message, res.ok? "success" : "error");
+    showMsg(data.message, res.ok ? "success" : "error");
     if (res.ok) {
       loadAdminPlans();
       loadPlans();
@@ -1188,7 +1192,7 @@ async function togglePlan(id, is_active) {
     });
     const data = await res.json();
     hideLoader();
-    showMsg(data.message, res.ok? "success" : "error");
+    showMsg(data.message, res.ok ? "success" : "error");
     if (res.ok) {
       loadAdminPlans();
       loadPlans();
@@ -1216,7 +1220,7 @@ async function editPlan(id) {
   if (el("editPlanProvider")) el("editPlanProvider").value = plan.provider || "";
   if (el("editPlanNetworkId")) el("editPlanNetworkId").value = plan.network_id || "";
   if (el("editPlanApiId")) el("editPlanApiId").value = plan.api_plan_id || "";
-  if (el("editPlanActive")) el("editPlanActive").checked = plan.is_active!== false;
+  if (el("editPlanActive")) el("editPlanActive").checked = plan.is_active !== false;
 
   openModal("editPlanModal");
 }
@@ -1238,7 +1242,7 @@ async function savePlanEdit() {
     is_active: el("editPlanActive")?.checked
   };
 
-  if (!updated.name ||!updated.price ||!updated.cost ||!updated.provider ||!updated.network_id ||!updated.api_plan_id) {
+  if (!updated.name || !updated.price || !updated.cost || !updated.provider || !updated.network_id || !updated.api_plan_id) {
     return showMsg("Name, Price, Cost, Provider, Network ID and API Plan ID are required", "error");
   }
 
@@ -1252,7 +1256,7 @@ async function savePlanEdit() {
     const data = await res.json();
     hideLoader();
     closeModal("editPlanModal");
-    showMsg(data.message, res.ok? "success" : "error");
+    showMsg(data.message, res.ok ? "success" : "error");
     if (res.ok) {
       loadAdminPlans();
       loadPlans();
