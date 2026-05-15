@@ -1357,6 +1357,7 @@ async function submitPin() {
 
 /* ================= ADMIN DATA LOADER ================= */
 function loadAdminData() {
+  loadWithdrawals();
   loadAdminPlans();
   loadAdminUsers();
 }
