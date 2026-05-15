@@ -1123,9 +1123,9 @@ async function loadAdminPlans() {
         const restrictBadge = p.restricted ? `<span class="badge badgeWarning">RESTRICTED</span>` : '';
         const providerBadge = p.provider ? `<span class="badge">${p.provider.toUpperCase()}</span>` : '';
         
+        const defaultDisplay = p.default_price != null && p.default_price !== '' ? formatNaira(p.default_price) : formatNaira(p.price);
         const regularDisplay = p.regular_price != null && p.regular_price !== '' ? formatNaira(p.regular_price) : '-';
         const topDisplay = p.top_price != null && p.top_price !== '' ? formatNaira(p.top_price) : '-';
-        const defaultDisplay = p.default_price != null && p.default_price !== '' ? formatNaira(p.default_price) : formatNaira(p.price);
         
         list.innerHTML += `<div class="planCard">
           <strong>${p.name}</strong> - ${p.network} ${restrictBadge} ${providerBadge}<br>
