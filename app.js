@@ -1123,12 +1123,13 @@ async function loadAdminPlans() {
         const restrictBadge = p.restricted ? `<span class="badge badgeWarning">RESTRICTED</span>` : '';
         const providerBadge = p.provider ? `<span class="badge">${p.provider.toUpperCase()}</span>` : '';
         
-        const regularDisplay = p.regular_price ? formatNaira(p.regular_price) : '-';
-        const topDisplay = p.top_price ? formatNaira(p.top_price) : '-';
+        const regularDisplay = p.regular_price != null && p.regular_price !== '' ? formatNaira(p.regular_price) : '-';
+        const topDisplay = p.top_price != null && p.top_price !== '' ? formatNaira(p.top_price) : '-';
+        const defaultDisplay = p.default_price != null && p.default_price !== '' ? formatNaira(p.default_price) : formatNaira(p.price);
         
         list.innerHTML += `<div class="planCard">
           <strong>${p.name}</strong> - ${p.network} ${restrictBadge} ${providerBadge}<br>
-          Default: ${formatNaira(p.price)} | Regular: ${regularDisplay} | Top: ${topDisplay} | Cost: ${formatNaira(p.cost)}<br>
+          Default: ${defaultDisplay} | Regular: ${regularDisplay} | Top: ${topDisplay} | Cost: ${formatNaira(p.cost)}<br>
           Provider: ${p.provider || 'N/A'} | Net ID: ${p.network_id || 'N/A'} | API ID: ${p.api_plan_id || 'N/A'}<br>
           <span style="color:${statusColor}">${p.is_active ? 'Active' : 'Disabled'}</span>
           <button onclick="editPlan(${p.id})" class="primaryBtn">Edit</button>
@@ -1147,6 +1148,7 @@ async function addPlan() {
     network: el("newPlanNetwork")?.value,
     name: el("newPlanName")?.value,
     price: el("newPlanPrice")?.value,
+    default_price: el("newPlanDefaultPrice")?.value || null,
     regular_price: el("newPlanRegularPrice")?.value || null,
     top_price: el("newPlanTopPrice")?.value || null,
     cost: el("newPlanCost")?.value,
@@ -1212,6 +1214,7 @@ async function editPlan(id) {
 
   if (el("editPlanName")) el("editPlanName").value = plan.name || "";
   if (el("editPlanPrice")) el("editPlanPrice").value = plan.price || "";
+  if (el("editPlanDefaultPrice")) el("editPlanDefaultPrice").value = plan.default_price || "";
   if (el("editPlanRegularPrice")) el("editPlanRegularPrice").value = plan.regular_price || "";
   if (el("editPlanTopPrice")) el("editPlanTopPrice").value = plan.top_price || "";
   if (el("editPlanCost")) el("editPlanCost").value = plan.cost || "";
@@ -1231,6 +1234,7 @@ async function savePlanEdit() {
   const updated = {
     name: el("editPlanName")?.value,
     price: el("editPlanPrice")?.value,
+    default_price: el("editPlanDefaultPrice")?.value || null,
     regular_price: el("editPlanRegularPrice")?.value || null,
     top_price: el("editPlanTopPrice")?.value || null,
     cost: el("editPlanCost")?.value,
