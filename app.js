@@ -893,7 +893,6 @@ async function confirmFund() {
 
   showLoader("Checking account...");
   try {
-    // CHANGED: Use /api/wallet/create-dva instead of /api/fund/init
     const res = await fetch(API + "/api/wallet/create-dva", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: "Bearer " + getToken() },
@@ -902,8 +901,10 @@ async function confirmFund() {
     const data = await res.json();
     hideLoader();
 
-    // NEW: Handle KYC requirement
-    if (data.requireKyc) {
+    console.log('DVA Response:', data);
+
+    // Handle KYC requirement
+    if (data.requireKyc || !data.success && data.error) {
       closeModal('msgModal');
       openKycModal();
       return;
@@ -923,7 +924,7 @@ async function confirmFund() {
   }
 }
 
-// NEW: Submit from KYC modal
+// Submit from KYC modal
 async function submitKycAndGenerate() {
   const idType = el('idTypeSelect').value;
   const idNumber = el('idNumberInput').value;
@@ -950,7 +951,11 @@ async function submitKycAndGenerate() {
 
     if (data.success && data.account_number) {
       closeKycModal();
-      showPaymentPointDetails(data, pendingFundAmount);
+      // If funding flow, show payment details. If DVA generation flow, just refresh.
+      if (pendingFundAmount > 0) {
+        showPaymentPointDetails(data, pendingFundAmount);
+        pendingFundAmount = 0;
+      }
       showMsg("Account generated successfully!", "success");
       await loadAccount();
     } else {
@@ -995,8 +1000,8 @@ function showPaymentPointDetails(data, amount) {
   openModal("msgModal");
 }
 
-/* ================= ACCOUNT GENERATION FROM FUND SECTION ================= */
-async function generateAccount() {
+/* ================= DVA GENERATION - MATCHES YOUR HTML ================= */
+async function generateDVA() {
   showLoader("Creating your PaymentPoint account...");
   try {
     const res = await fetch(API + "/api/wallet/create-dva", {
@@ -1007,20 +1012,22 @@ async function generateAccount() {
     const data = await res.json();
     hideLoader();
 
-    if (data.requireKyc) {
+    console.log('DVA Response:', data);
+
+    if (data.requireKyc || !data.success && data.error) {
       openKycModal();
       return;
     }
 
     if (res.ok && (data.success || data.account_number)) {
       showMsg("Virtual account created successfully", "success");
-      if (el("generateAccountBtn")) el("generateAccountBtn").style.display = "none";
       await loadAccount();
     } else {
       showMsg(data.message || data.error || "Failed to create account", "error");
     }
-  } catch {
+  } catch (err) {
     hideLoader();
+    console.error("DVA Error:", err);
     showMsg("Server error", "error");
   }
 }
