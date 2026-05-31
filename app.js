@@ -100,6 +100,9 @@ function checkAuth() {
 async function loadDashboard() {
   if (!checkAuth()) return;
 
+   initKycListeners(); // ADD THIS LINE RIGHT HERE
+
+
   try {
     const res = await fetch(API + "/api/me", { headers: { Authorization: "Bearer " + getToken() } });
     if (!res.ok) throw new Error("Failed to fetch user - " + res.status);
