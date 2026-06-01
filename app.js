@@ -1003,7 +1003,7 @@ function showPaymentPointDetails(data, amount) {
   openModal("msgModal");
 }
 
-/* ================= DVA GENERATION - MATCHES YOUR HTML ================= */
+/* ================= DVA GENERATION - CORRECTED ================= */
 async function generateDVA() {
   showLoader("Creating your PaymentPoint account...");
   try {
@@ -1017,24 +1017,28 @@ async function generateDVA() {
 
     console.log('DVA Response:', data);
 
-    if (data.requireKyc || !data.success && data.error) {
+    // Check requireKyc explicitly - this must come first
+    if (data.requireKyc === true) {
       openKycModal();
       return;
     }
 
+    // Success case
     if (res.ok && (data.success || data.account_number)) {
       showMsg("Virtual account created successfully", "success");
       await loadAccount();
-    } else {
-      showMsg(data.message || data.error || "Failed to create account", "error");
+      return;
     }
+
+    // All other errors - show message, don't open modal
+    showMsg(data.message || data.error || "Failed to create account", "error");
+
   } catch (err) {
     hideLoader();
     console.error("DVA Error:", err);
     showMsg("Server error", "error");
   }
 }
-
 
 
 
