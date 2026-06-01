@@ -861,7 +861,7 @@ function initKycListeners() {
 
   el('idTypeSelect').addEventListener('change', () => {
     const idType = el('idTypeSelect').value;
-    el('idNumberInput').placeholder = idType === 'bvn'? 'Enter 11-digit BVN' : 'Enter 11-digit NIN';
+    el('idNumberInput').placeholder = idType === 'bvn' ? 'Enter 11-digit BVN' : 'Enter 11-digit NIN';
     el('idNumberInput').value = '';
     el('idError').style.display = 'none';
   });
@@ -906,15 +906,15 @@ async function confirmFund() {
 
     console.log('DVA Response:', data);
 
-    // Handle KYC requirement
-    if (data.requireKyc || !data.success && data.error) {
+    // FIXED: Check requireKyc explicitly first
+    if (data.requireKyc === true) {
       closeModal('msgModal');
       openKycModal();
       return;
     }
 
     // Account exists or was just created
-    if (data.success && (data.account_number || data.account?.account_number)) {
+    if (res.ok && data.success && (data.account_number || data.account?.account_number)) {
       const acc = data.account_number ? data : data.account;
       showPaymentPointDetails(acc, amount);
     } else {
@@ -933,7 +933,7 @@ async function submitKycAndGenerate() {
   const idNumber = el('idNumberInput').value;
   const idError = el('idError');
 
-  if (idNumber.length!== 11) {
+  if (idNumber.length !== 11) {
     idError.textContent = `${idType.toUpperCase()} must be exactly 11 digits`;
     idError.style.display = 'block';
     return;
@@ -958,9 +958,14 @@ async function submitKycAndGenerate() {
       if (pendingFundAmount > 0) {
         showPaymentPointDetails(data, pendingFundAmount);
         pendingFundAmount = 0;
+      } else {
+        showMsg("Account generated successfully!", "success");
       }
-      showMsg("Account generated successfully!", "success");
       await loadAccount();
+    } else if (data.requireKyc === true) {
+      // KYC still required - keep modal open
+      idError.textContent = data.message || "Verification failed. Check your BVN/NIN";
+      idError.style.display = 'block';
     } else {
       idError.textContent = data.error || data.message || "Verification failed";
       idError.style.display = 'block';
@@ -1024,7 +1029,7 @@ async function generateDVA() {
     }
 
     // Success case
-    if (res.ok && (data.success || data.account_number)) {
+    if (res.ok && data.success && data.account_number) {
       showMsg("Virtual account created successfully", "success");
       await loadAccount();
       return;
