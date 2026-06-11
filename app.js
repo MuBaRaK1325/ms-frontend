@@ -771,23 +771,31 @@ async function buyData(pin) {
       
       // Show TEEVERSH receipt
       showReceipt({
-        number: data.phone || phone,
+        phone: data.phone || phone,
+        number: data.phone || phone, // fallback for old code
         network: data.network || selectedNetwork?.toUpperCase(),
-        plan: data.plan_name || selectedPlan?.name,
-        amount: data.amount,  // use API response, not selectedPlan.price
-        date: data.created_at || new Date().toISOString(),
-        txnId: data.reference || data.transaction_id || data.tx_id,
+        plan_name: data.plan_name || selectedPlan?.name,
+        plan: data.plan_name || selectedPlan?.name, // fallback
+        amount: Number(data.amount),
+        created_at: data.created_at || new Date().toISOString(),
+        date: data.created_at || new Date().toISOString(), // fallback
+        reference: data.reference || data.transaction_id || data.tx_id,
+        txnId: data.reference || data.transaction_id || data.tx_id, // fallback
         status: data.status || 'SUCCESS',
-        balance_before: data.balance_before,
-        balance_after: data.balance_after
+        balance_before: data.balance_before != null ? Number(data.balance_before) : null,
+        balance_after: data.balance_after != null ? Number(data.balance_after) : null
       });
 
       if (el("dataPhone")) el("dataPhone").value = '';
+      selectedPhone = null;
+      selectedPlanId = null;
+      selectedPlan = null;
     } else {
       showMsg(data.message || "Purchase failed", "error");
     }
   } catch (err) {
     hideLoader();
+    console.error('Buy Data Error:', err);
     showMsg("Network error. Try again.", "error");
   }
 }
@@ -818,24 +826,30 @@ async function buyAirtime(pin) {
 
       // Show TEEVERSH receipt
       showReceipt({
-        number: data.phone || phone,
+        phone: data.phone || phone,
+        number: data.phone || phone, // fallback
         network: data.network || airtimeNetwork?.toUpperCase(),
-        plan: 'Airtime Top-up',
-        amount: data.amount || amount,  // prefer API response
-        date: data.created_at || new Date().toISOString(),
-        txnId: data.reference || data.transaction_id || data.tx_id,
+        plan_name: 'Airtime Top-up',
+        plan: 'Airtime Top-up', // fallback
+        amount: Number(data.amount || amount),
+        created_at: data.created_at || new Date().toISOString(),
+        date: data.created_at || new Date().toISOString(), // fallback
+        reference: data.reference || data.transaction_id || data.tx_id,
+        txnId: data.reference || data.transaction_id || data.tx_id, // fallback
         status: data.status || 'SUCCESS',
-        balance_before: data.balance_before,
-        balance_after: data.balance_after
+        balance_before: data.balance_before != null ? Number(data.balance_before) : null,
+        balance_after: data.balance_after != null ? Number(data.balance_after) : null
       });
 
       if (el("airtimePhone")) el("airtimePhone").value = '';
       if (el("airtimeAmount")) el("airtimeAmount").value = '';
+      selectedPhone = null;
     } else {
       showMsg(data.message || "Purchase failed", "error");
     }
   } catch (err) {
     hideLoader();
+    console.error('Buy Airtime Error:', err);
     showMsg("Network error. Try again.", "error");
   }
 }
