@@ -777,7 +777,9 @@ async function buyData(pin) {
         amount: data.amount,  // use API response, not selectedPlan.price
         date: data.created_at || new Date().toISOString(),
         txnId: data.reference || data.transaction_id || data.tx_id,
-        status: data.status || 'SUCCESS'
+        status: data.status || 'SUCCESS',
+        balance_before: data.balance_before,
+        balance_after: data.balance_after
       });
 
       if (el("dataPhone")) el("dataPhone").value = '';
@@ -822,7 +824,9 @@ async function buyAirtime(pin) {
         amount: data.amount || amount,  // prefer API response
         date: data.created_at || new Date().toISOString(),
         txnId: data.reference || data.transaction_id || data.tx_id,
-        status: data.status || 'SUCCESS'
+        status: data.status || 'SUCCESS',
+        balance_before: data.balance_before,
+        balance_after: data.balance_after
       });
 
       if (el("airtimePhone")) el("airtimePhone").value = '';
