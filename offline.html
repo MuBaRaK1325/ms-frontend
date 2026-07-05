@@ -1,15 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Offline - TEEVERSH</title>
+  <title>Offline - MSDATASUB</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0077FF">
   <style>
-    body{background:#000;color:#ca3be7;font-family:sans-serif;text-align:center;padding:50px}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #0A0F1E, #1A2333);
+      color: white;
+      font-family: system-ui, -apple-system, sans-serif;
+      text-align: center;
+      padding: 50px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px rgba(0, 119, 255, 0.3);
+      border: 2px solid rgba(0, 119, 255, 0.3);
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #0077FF;
+    }
+    h1 .sub { color: #FF8C00; }
+    p {
+      font-size: 16px;
+      opacity: 0.8;
+      margin-bottom: 24px;
+      max-width: 320px;
+    }
+    button {
+      padding: 14px 32px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #0077FF, #0055CC);
+      color: white;
+      box-shadow: 0 4px 16px rgba(0, 119, 255, 0.4);
+      transition: all 0.2s;
+    }
+    button:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 20px rgba(0, 119, 255, 0.5);
+    }
   </style>
 </head>
 <body>
-  <h1>You're Offline</h1>
-  <p>Check your connection and try again.</p>
-  <button onclick="location.reload()">Retry</button>
+  <img src="/assets/logo.png" alt="MSDATASUB" class="logo">
+  <h1>You're <span class="sub">Offline</span></h1>
+  <p>Check your connection and try again. We’ll be right here when you’re back.</p>
+  <button onclick="location.reload()">Retry Connection</button>
 </body>
 </html>

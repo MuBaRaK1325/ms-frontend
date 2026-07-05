@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TEEVERSH DATA PLUG - Cheap Data, Airtime & Bills Payment</title>
+  <title>MSDATASUB - Cheap Data, Airtime & Bills Payment</title>
   <meta name="description" content="TEEVERSH DATA PLUG - Buy cheap MTN, GLO, Airtel, 9mobile data, airtime and pay electricity bills instantly in Nigeria">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#6B46C1">
@@ -15,11 +15,11 @@
   <link rel="icon" href="/images/TEEVERSH.png">
   
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+ * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: system-ui, -apple-system, sans-serif;
       min-height: 100vh;
-      background: linear-gradient(135deg, #1a0b2e, #2d1b4e);
+      background: linear-gradient(135deg, #0A0F1E, #1A2333);
       color: white;
       padding: 1rem;
     }
@@ -28,13 +28,13 @@
       margin: 0 auto; 
     }
     .glass-card {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 119, 255, 0.2);
       border-radius: 20px;
       padding: 24px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 8px 32px rgba(0, 119, 255, 0.2);
       margin-bottom: 16px;
     }
     .logo {
@@ -42,17 +42,21 @@
       height: 96px;
       border-radius: 24px;
       margin: 0 auto 24px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 8px 32px rgba(0, 119, 255, 0.3);
       object-fit: cover;
       display: block;
+      border: 2px solid rgba(0, 119, 255, 0.3);
     }
     .h1 {
       font-size: 32px;
       font-weight: 800;
       margin-bottom: 8px;
-      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      text-shadow: 0 2px 8px rgba(0, 119, 255, 0.3);
       text-align: center;
     }
+    .h1 .ms { color: #0077FF; }
+    .h1 .data { color: #F5F7FA; }
+    .h1 .sub { color: #FF8C00; }
     .tagline {
       font-size: 18px;
       opacity: 0.9;
@@ -60,6 +64,7 @@
       font-weight: 600;
       text-align: center;
     }
+    .tagline .ahead { color: #FF8C00; }
     .btn {
       width: 100%;
       padding: 16px;
@@ -75,15 +80,23 @@
       margin-bottom: 12px;
     }
     .btn-primary {
-      background: white;
-      color: #6B46C1;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    }
-    .btn-primary:hover { transform: translateY(-2px); }
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.15);
+      background: linear-gradient(135deg, #0077FF, #0055CC);
       color: white;
-      border: 2px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 16px rgba(0, 119, 255, 0.4);
+    }
+    .btn-primary:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 20px rgba(0, 119, 255, 0.5);
+    }
+    .btn-secondary {
+      background: linear-gradient(135deg, #FF8C00, #FF6B00);
+      color: white;
+      border: none;
+      box-shadow: 0 4px 16px rgba(255, 140, 0, 0.3);
+    }
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 140, 0, 0.4);
     }
     .service-grid {
       display: grid;
@@ -92,11 +105,17 @@
       margin: 16px 0;
     }
     .service-item {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(0, 119, 255, 0.1);
+      border: 1px solid rgba(0, 119, 255, 0.2);
       padding: 16px;
       border-radius: 12px;
       text-align: center;
       font-size: 14px;
+      transition: all 0.2s;
+    }
+    .service-item:hover {
+      background: rgba(0, 119, 255, 0.15);
+      border-color: #0077FF;
     }
     .contact-info {
       font-size: 14px;
@@ -104,22 +123,25 @@
       line-height: 1.8;
     }
     .contact-info a {
-      color: #6B46C1;
+      color: #0077FF;
       text-decoration: none;
       font-weight: 600;
+    }
+    .contact-info a:hover {
+      color: #FF8C00;
     }
     .contact-info strong {
       display: block;
       margin-bottom: 8px;
-      color: white;
+      color: #F5F7FA;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="glass-card" style="text-align:center;">
-      <img src="images/TEEVERSH.png" class="logo" alt="Teeversh Logo">
-      <h1 class="h1">TEEVERSH DATA PLUG</h1>
+      <img src="images/ms.png" class="logo" alt="MS Logo">
+      <h1 class="h1">MSDATASUB</h1>
       <p class="tagline">Cheap, Affordable, Fast</p>
       <p style="opacity:0.8;margin-top:8px;">Nigeria's Trusted VTU & Bills Payment Platform</p>
     </div>
@@ -144,10 +166,10 @@
       <h3 style="margin-bottom:12px;font-size:18px;">Contact Information</h3>
       <div class="contact-info">
         <strong>TEEVERSH GLOBAL RESOURCES NIG LTD</strong>
-        <p>📧 Email: <a href="mailto:bashirahmadt11696@gmail.com">bashirahmadt11696@gmail.com</a></p>
+        <p>📧 Email: <a href="mailto:msdatasub1@gmail.com">bashirahmadt11696@gmail.com</a></p>
         <p>📞 Phone: <a href="tel:+2347047457735">+234 704 745 7735</a></p>
-        <p>📱 WhatsApp: <a href="https://wa.me/2347047457735" target="_blank">+234 704 745 7735</a></p>
-        <p>📍 Address: No. 8G Zaria Road, Funtua, Katsina State</p>
+        <p>📱 WhatsApp: <a href="https://wa.me/2348067892342" target="_blank">+234 704 745 7735</a></p>
+        <p>📍 Address: No. 25 sharifai street, kano State</p>
         <p>🕐 Customer Support: 8:00 AM - 10:00 PM Daily</p>
         <p>🏢 RC Number: 9136449</p>
       </div>

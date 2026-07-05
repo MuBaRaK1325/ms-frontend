@@ -430,9 +430,9 @@ function renderPlans() {
   });
 }
 
-/* ================= BIOMETRIC STATUS - TEEVERSH DATA PLUG - FIXED 100% ================= */
-const APP_NAME = 'TEEVERSH DATA PLUG';
-const APP_LOGO = '/images/TEEVERSH.png';
+/* ================= BIOMETRIC STATUS - MSDATASUB - FIXED 100% ================= */
+const APP_NAME = 'MSDATASUB';
+const APP_LOGO = '/images/ms.png';
 let cachedRegOptions = null;
 let biometricReady = false;
 
@@ -445,9 +445,9 @@ function showDebug(msg, isError = false) {
     statusEl.innerHTML = `
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
         <img src="${APP_LOGO}" style="width:24px;height:24px;border-radius:4px;object-fit:contain;" onerror="this.style.display='none'">
-        <strong style="font-size:14px;color:#a855f7;">${APP_NAME}</strong>
+        <strong style="font-size:14px;color:#0077FF;">${APP_NAME}</strong>
       </div>
-      <div style="color:${isError? '#ff4d4d' : '#8b5cf6'};font-size:12px;line-height:1.4;white-space:pre-line;">${msg}</div>
+      <div style="color:${isError? '#FF6B6B' : '#0077FF'};font-size:12px;line-height:1.4;white-space:pre-line;">${msg}</div>
     `;
   }
   console.log('[Biometric]', msg);
@@ -502,7 +502,7 @@ async function checkBiometricStatus() {
   enableBtn.style.alignItems = "center";
   enableBtn.style.justifyContent = "center";
   enableBtn.style.fontWeight = "600";
-  enableBtn.style.background = '#8b5cf6';
+  enableBtn.style.background = '#0077FF';
   showDebug("Checking biometric support...");
 
   try {
@@ -520,7 +520,7 @@ async function checkBiometricStatus() {
       enableBtn.onclick = loginWithBiometric;
       enableBtn.disabled = false;
       enableBtn.style.display = "flex";
-      enableBtn.style.background = '#8b5cf6';
+      enableBtn.style.background = '#0077FF';
       return false;
     }
 
@@ -545,13 +545,13 @@ async function checkBiometricStatus() {
     if (data.enabled === true) {
       enableBtn.innerHTML = `<img src="${APP_LOGO}" style="width:20px;height:20px;margin-right:8px;border-radius:3px;object-fit:contain;">Login with Fingerprint`;
       enableBtn.onclick = loginWithBiometric;
-      enableBtn.style.background = '#8b5cf6';
+      enableBtn.style.background = '#0077FF';
       enableBtn.style.display = "flex";
       showDebug('Passkey enabled. Tap to verify your identity');
     } else {
       enableBtn.innerHTML = `<img src="${APP_LOGO}" style="width:20px;height:20px;margin-right:8px;border-radius:3px;object-fit:contain;">Enable Fingerprint/Face ID`;
       enableBtn.onclick = enableBiometric;
-      enableBtn.style.background = '#8b5cf6';
+      enableBtn.style.background = '#FF8C00';
       enableBtn.style.display = "flex";
       showDebug('Secure your account with biometric authentication');
     }
@@ -593,14 +593,14 @@ function enableBiometric() {
       biometricReady = true;
       btn.disabled = false;
       btn.innerHTML = `<img src="${APP_LOGO}" style="width:20px;height:20px;margin-right:8px;border-radius:3px;object-fit:contain;">Touch Sensor Now`;
-      btn.style.background = '#8b5cf6';
+      btn.style.background = '#FF8C00';
       showDebug('Step 4: Ready! Tap again');
     })
 .catch(e => {
       showDebug('ERROR Step 2: ' + e.message, true);
       btn.disabled = false;
       btn.innerHTML = `<img src="${APP_LOGO}" style="width:20px;height:20px;margin-right:8px;border-radius:3px;object-fit:contain;">Enable Fingerprint/Face ID`;
-      btn.style.background = '#8b5cf6';
+      btn.style.background = '#FF8C00';
       biometricReady = false;
     });
     return;
@@ -636,12 +636,12 @@ function enableBiometric() {
         showDebug('TIMEOUT: Popup bai fito ba', true);
         btn.disabled = false;
         btn.innerHTML = `<img src="${APP_LOGO}" style="width:20px;height:20px;margin-right:8px;border-radius:3px;object-fit:contain;">Enable Fingerprint/Face ID`;
-        btn.style.background = '#8b5cf6';
+        btn.style.background = '#FF8C00';
         biometricReady = false;
       }, 5000);
 
       navigator.credentials.create({ publicKey })
- .then(cred => {
+.then(cred => {
         clearTimeout(timeoutId);
         if (!cred) throw new Error('User cancelled');
         showDebug('Step 6: Success! Credential ID: ' + cred.id.substring(0,20) + '...');
@@ -667,8 +667,8 @@ function enableBiometric() {
           body: JSON.stringify(credential)
         });
       })
- .then(r => r.json())
- .then(result => {
+.then(r => r.json())
+.then(result => {
         if (result.verified === true) {
           showDebug('SUCCESS! Biometric enabled ✓');
           btn.style.display = 'none';
@@ -679,12 +679,12 @@ function enableBiometric() {
           throw new Error(result.error || result.message || 'Backend verification failed');
         }
       })
- .catch(err => {
+.catch(err => {
         clearTimeout(timeoutId);
         showDebug('ERROR: ' + err.message, true);
         btn.disabled = false;
         btn.innerHTML = `<img src="${APP_LOGO}" style="width:20px;height:20px;margin-right:8px;border-radius:3px;object-fit:contain;">Enable Fingerprint/Face ID`;
-        btn.style.background = '#8b5cf6';
+        btn.style.background = '#FF8C00';
         biometricReady = false;
         cachedRegOptions = null;
       });
