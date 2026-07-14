@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MSDATASUB - Sign Up</title>
+  <title>MSDATAHUB - Sign Up</title>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#0077FF">
   <style>
@@ -193,7 +193,7 @@ btn.onclick = async () => {
     const res = await fetch(API + "/api/signup", {
       method: "POST",
       headers: { "Content-Type":"application/json" },
-      body: JSON.stringify({ username, email, phone, password, pin, company: "teeversh" })
+      body: JSON.stringify({ username, email, phone, password, pin, company: "MSDATASUB" })
     });
     const data = await res.json();
     if (res.ok) {

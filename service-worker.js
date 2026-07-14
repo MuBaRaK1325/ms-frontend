@@ -1,4 +1,4 @@
-const CACHE_NAME = 'msdatasub-v1'; // Bumped to force update
+const CACHE_NAME = 'msdatahub-v1'; // Bumped to force update
 const OFFLINE_URL = '/offline.html';
 
 // Static assets - cache first
@@ -24,9 +24,9 @@ self.addEventListener('install', event => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      console.log('[MSDATASUB SW] Caching static assets');
+      console.log('[MSDATAHUB SW] Caching static assets');
       return cache.addAll(STATIC_ASSETS).catch(err => {
-        console.log('[MSDATASUB SW] Cache failed for some assets:', err);
+        console.log('[MSDATAHUB SW] Cache failed for some assets:', err);
       });
     })
   );
@@ -37,11 +37,11 @@ self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => Promise.all(
       keys.filter(k => k !== CACHE_NAME).map(k => {
-        console.log('[MSDATASUB SW] Deleting old cache:', k);
+        console.log('[MSDATAHUB SW] Deleting old cache:', k);
         return caches.delete(k);
       })
     )).then(() => {
-      console.log('[MSDATASUB SW] Claiming clients');
+      console.log('[MSDATAHUB SW] Claiming clients');
       return self.clients.claim();
     })
   );
@@ -111,13 +111,13 @@ self.addEventListener('fetch', event => {
 // Push notifications
 self.addEventListener('push', event => {
   const data = event.data ? event.data.json() : {};
-  const title = data.title || 'MSDATASUB';
+  const title = data.title || 'MSDATAHUB';
   const options = {
     body: data.body || 'You have a new update',
     icon: '/images/TEEVERSH-192.png',
     badge: '/images/TEEVERSH-192.png',
     vibrate: [200, 100, 200],
-    tag: 'msdatasub-notification',
+    tag: 'msdatahub-notification',
     renotify: true,
     data: data.url || '/dashboard.html',
     actions: [
